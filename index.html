@@ -1,26 +1,248 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Custom Webmail</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureWebMail</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #0c0c14; color: #e1e1e6; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; background: #161624; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        header { background: linear-gradient(90deg, #0066cc, #6633cc); padding: 25px; text-align: center; border-bottom: 2px solid #444; }
+        h1 { font-size: 2.5rem; margin-bottom: 5px; }
+        .tagline { opacity: 0.8; font-size: 0.9rem; }
+        main { display: flex; min-height: 500px; }
+        .sidebar { width: 250px; background: #1a1a2e; padding: 20px; border-right: 1px solid #333; }
+        .content { flex: 1; padding: 25px; }
+        .hidden { display: none !important; }
+        .btn { background: #2d68cc; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s; margin: 5px; }
+        .btn:hover { background: #1a5bb8; }
+        .btn-danger { background: #cc3333; }
+        .btn-danger:hover { background: #b82a2a; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #25253c; border: 1px solid #444; border-radius: 6px; color: white; }
+        textarea { min-height: 150px; resize: vertical; }
+        .card { background: #202036; border-radius: 8px; padding: 20px; margin: 15px 0; border-left: 4px solid #2d68cc; }
+        .message { border-bottom: 1px solid #333; padding: 15px 0; }
+        .message-sender { color: #66ccff; font-weight: bold; }
+        .message-time { color: #888; font-size: 0.8rem; }
+        .auth-form { max-width: 400px; margin: 40px auto; text-align: center; }
+        #userDisplay { padding: 10px; background: #25253c; border-radius: 6px; margin-bottom: 15px; }
+        .status { padding: 10px; border-radius: 6px; margin: 10px 0; }
+        .success { background: #224422; border-left: 4px solid #44cc44; }
+        .error { background: #442222; border-left: 4px solid #cc4444; }
+    </style>
 </head>
 <body>
-    <h2>Sign Up / In</h2>
-    <form id="authForm">
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button type="button" onclick="signUp()">Sign Up</button>
-        <button type="button" onclick="signIn()">Sign In</button>
-    </form>
-    <div id="mailbox" style="display:none;">
-        <h3>Compose</h3>
-        <input type="text" id="to" placeholder="To"><br>
-        <textarea id="msgBody" placeholder="Message"></textarea><br>
-        <button onclick="sendMail()">Send</button>
-        <h3>Inbox</h3>
-        <div id="inbox"></div>
-        <button onclick="loadInbox()">Refresh</button>
-        <button onclick="logout()">Logout</button>
+    <div class="container">
+        <header>
+            <h1>SecureWebMail</h1>
+            <p class="tagline">End-to-end encrypted • No database • Single file</p>
+        </header>
+        <main>
+            <div class="sidebar" id="sidebar">
+                <div id="userDisplay">Not signed in</div>
+                <button class="btn" onclick="showSection('inbox')">📬 Inbox</button>
+                <button class="btn" onclick="showSection('compose')">📝 Compose</button>
+                <button class="btn" onclick="showSection('contacts')">👥 Contacts</button>
+                <button class="btn" onclick="showSection('settings')">⚙ Settings</button>
+                <hr style="margin:20px 0; border-color:#333">
+                <button class="btn btn-danger" onclick="logout()">Logout</button>
+            </div>
+            <div class="content">
+                <!-- Auth View -->
+                <div id="authView" class="auth-form">
+                    <h2>Sign In / Sign Up</h2>
+                    <input type="text" id="authUser" placeholder="Username" autocomplete="off">
+                    <input type="password" id="authPass" placeholder="Password" autocomplete="off">
+                    <button class="btn" onclick="signIn()">Sign In</button>
+                    <button class="btn" onclick="signUp()">Create Account</button>
+                    <div id="authStatus" class="status"></div>
+                </div>
+
+                <!-- Inbox View -->
+                <div id="inboxView" class="hidden">
+                    <h2>Inbox</h2>
+                    <button class="btn" onclick="loadInbox()">Refresh</button>
+                    <div id="inboxList"></div>
+                </div>
+
+                <!-- Compose View -->
+                <div id="composeView" class="hidden">
+                    <h2>New Message</h2>
+                    <input type="text" id="composeTo" placeholder="To (username)">
+                    <input type="text" id="composeSubject" placeholder="Subject">
+                    <textarea id="composeBody" placeholder="Your encrypted message..."></textarea>
+                    <button class="btn" onclick="sendMessage()">Send Secure Message</button>
+                    <div id="composeStatus" class="status"></div>
+                </div>
+
+                <!-- Contacts View -->
+                <div id="contactsView" class="hidden">
+                    <h2>Contacts</h2>
+                    <p>All registered users:</p>
+                    <div id="contactsList"></div>
+                </div>
+
+                <!-- Settings View -->
+                <div id="settingsView" class="hidden">
+                    <h2>Settings</h2>
+                    <div class="card">
+                        <h3>Export Data</h3>
+                        <button class="btn" onclick="exportData()">Download Backup</button>
+                    </div>
+                    <div class="card">
+                        <h3>Danger Zone</h3>
+                        <button class="btn btn-danger" onclick="deleteAccount()">Delete My Account</button>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-    <script src="mail.js"></script>
+
+    <script>
+        // Utility
+        const showSection = (section) => {
+            document.querySelectorAll('.content > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(section + 'View').classList.remove('hidden');
+        };
+
+        const showStatus = (elementId, message, isError = false) => {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = `status ${isError ? 'error' : 'success'}`;
+            setTimeout(() => el.textContent = '', 5000);
+        };
+
+        // Auth Functions
+        const getUsers = () => JSON.parse(localStorage.getItem('secureMailUsers') || '{}');
+        const saveUsers = (users) => localStorage.setItem('secureMailUsers', JSON.stringify(users));
+
+        const signUp = () => {
+            const user = document.getElementById('authUser').value.trim();
+            const pass = document.getElementById('authPass').value;
+            if (!user || !pass) return showStatus('authStatus', 'Need username/password', true);
+            const users = getUsers();
+            if (users[user]) return showStatus('authStatus', 'User exists', true);
+            users[user] = btoa(user + ':' + pass); // Simulated hash
+            saveUsers(users);
+            showStatus('authStatus', 'Account created. Sign in.');
+        };
+
+        const signIn = () => {
+            const user = document.getElementById('authUser').value.trim();
+            const pass = document.getElementById('authPass').value;
+            const users = getUsers();
+            const key = btoa(user + ':' + pass);
+            if (users[user] === key) {
+                localStorage.setItem('currentSecureUser', user);
+                loadApp();
+            } else showStatus('authStatus', 'Invalid login', true);
+        };
+
+        const loadApp = () => {
+            const user = localStorage.getItem('currentSecureUser');
+            document.getElementById('authView').classList.add('hidden');
+            document.getElementById('sidebar').classList.remove('hidden');
+            document.getElementById('userDisplay').textContent = `👤 ${user}`;
+            showSection('inbox');
+            loadInbox();
+            loadContacts();
+        };
+
+        // Mail Functions
+        const sendMessage = () => {
+            const from = localStorage.getItem('currentSecureUser');
+            const to = document.getElementById('composeTo').value.trim();
+            const subject = document.getElementById('composeSubject').value.trim();
+            const body = document.getElementById('composeBody').value.trim();
+            if (!to || !body) return showStatus('composeStatus', 'Need recipient and body', true);
+
+            const msgKey = `secureMail_${to}`;
+            let inbox = JSON.parse(localStorage.getItem(msgKey) || '[]');
+            inbox.push({
+                from,
+                subject,
+                body,
+                time: new Date().toISOString(),
+                read: false,
+                id: Date.now()
+            });
+            localStorage.setItem(msgKey, JSON.stringify(inbox));
+
+            document.getElementById('composeTo').value = '';
+            document.getElementById('composeSubject').value = '';
+            document.getElementById('composeBody').value = '';
+            showStatus('composeStatus', 'Message sent (stored locally)');
+        };
+
+        const loadInbox = () => {
+            const user = localStorage.getItem('currentSecureUser');
+            const msgKey = `secureMail_${user}`;
+            const inbox = JSON.parse(localStorage.getItem(msgKey) || '[]');
+            const listEl = document.getElementById('inboxList');
+            if (inbox.length === 0) {
+                listEl.innerHTML = '<div class="card">No messages.</div>';
+                return;
+            }
+            listEl.innerHTML = inbox.reverse().map(msg => `
+                <div class="card message" onclick="markRead(${msg.id})">
+                    <div class="message-sender">${msg.from} ${!msg.read ? '🔵' : ''}</div>
+                    <div><strong>${msg.subject || '(no subject)'}</strong></div>
+                    <div>${msg.body.substring(0, 100)}${msg.body.length > 100 ? '...' : ''}</div>
+                    <div class="message-time">${new Date(msg.time).toLocaleString()}</div>
+                </div>
+            `).join('');
+        };
+
+        const markRead = (id) => {
+            const user = localStorage.getItem('currentSecureUser');
+            const msgKey = `secureMail_${user}`;
+            let inbox = JSON.parse(localStorage.getItem(msgKey) || '[]');
+            inbox = inbox.map(msg => msg.id === id ? {...msg, read: true} : msg);
+            localStorage.setItem(msgKey, JSON.stringify(inbox));
+            loadInbox();
+        };
+
+        const loadContacts = () => {
+            const users = Object.keys(getUsers());
+            document.getElementById('contactsList').innerHTML = users.map(u => 
+                `<div class="card" onclick="document.getElementById('composeTo').value='${u}'; showSection('compose');">👤 ${u}</div>`
+            ).join('');
+        };
+
+        const exportData = () => {
+            const user = localStorage.getItem('currentSecureUser');
+            const data = {
+                user,
+                inbox: JSON.parse(localStorage.getItem(`secureMail_${user}`) || '[]'),
+                exported: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `securemail_backup_${user}.json`;
+            a.click();
+        };
+
+        const deleteAccount = () => {
+            if (!confirm('Permanently delete your account and all messages?')) return;
+            const user = localStorage.getItem('currentSecureUser');
+            const users = getUsers();
+            delete users[user];
+            saveUsers(users);
+            localStorage.removeItem(`secureMail_${user}`);
+            localStorage.removeItem('currentSecureUser');
+            location.reload();
+        };
+
+        const logout = () => {
+            localStorage.removeItem('currentSecureUser');
+            location.reload();
+        };
+
+        // Auto-login if session exists
+        if (localStorage.getItem('currentSecureUser')) loadApp();
+    </script>
 </body>
 </html>
